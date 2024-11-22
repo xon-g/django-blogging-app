@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 
 @receiver(post_save, sender=User, dispatch_uid="update_user_post_save")
 def update_user_post_save(sender, instance, **kwargs):
-    if instance.author:
+    if hasattr(instance, 'author') and instance.author:
         if instance.author.name != instance.get_full_name():
             instance.author.name = instance.get_full_name()
         if instance.author.email != instance.email:
