@@ -18,6 +18,7 @@ posts_urlpatterns = [
 author_urlpatterns = [
     path('authors/', views.AuthorListView.as_view(), name='author_list'),
     path('authors/<int:pk>', views.AuthorDetailView.as_view(), name='author_detail'),
+    path('authors/<int:pk>/load-more-posts/', views.LoadMorePostsView.as_view(), name='author_load_more_posts'),
 ]
 
 urlpatterns += author_urlpatterns + posts_urlpatterns

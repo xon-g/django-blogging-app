@@ -172,7 +172,51 @@ class AuthorDetailView(DetailView):
     template_name = 'author_detail.html'
     context_object_name = 'author'
 
+    def get_posts(self, per_page=10):
+        paginator = Paginator(self.object.post_set.all().order_by('-created_at'), per_page)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return page_obj
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['posts'] = self.object.post_set.all()
+        context['posts'] = self.get_posts()
         return context
+
+class LoadMorePostsView(View):
+    def get(self, request, *args, **kwargs):
+        author_id = kwargs['pk']
+        author = Author.objects.get(id=author_id)
+        offset = int(request.GET.get('offset', 0))
+        per_page = 10
+        posts = author.post_set.all().order_by('-created_at')[offset:offset+per_page]
+
+        posts_html = ''
+        for post in posts:
+            posts_html += f'''
+                <div class="post">
+                    <a href="{reverse('post_detail', args=[post.id])}" class="text-sm font-bold text-[#4b7dc4]">{post.title}</a>
+                    <p class="text-xs italic">{ date(post.created_at, "M. j, Y, g:i A") }</p>
+                    <p class="text-sm mt-1">{ post.content }</p>
+                    <hr class="my-4 opacity-25">
+                </div>
+            '''
+
+        # Add a load more button if there are more posts
+        if author.post_set.count() > offset+per_page:
+            posts_html += f'''
+                <button
+                    class="load-more-posts bg-[#4b7dc4] text-white py-2 px-4 rounded mt-5"
+                    hx-get="{reverse('author_load_more_posts', args=[author_id])}?offset={offset+per_page}"
+                    hx-target=".load-more-posts"
+                    hx-swap="beforebegin"
+                >
+                    Load More Posts
+                </button>
+            '''
+        else:
+            posts_html += f'''
+                <p class="text-sm">No more posts</p>
+            '''
+
+        return HttpResponse(posts_html)

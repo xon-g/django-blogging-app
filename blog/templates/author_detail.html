@@ -5,21 +5,48 @@
         <div class="">
             <h1 class="text-3xl font-bold mb-4">Author</h1>
             <h1 class="text-2xl font-bold">{{ author.name }}</h1>
-            <p class="text-sm">{{ post.published_date }}</p>
-            <p class="text-sm mt-4 max-w-lg">{{ post.content }}</p>
+            <p class="text-sm">{{ author.email }}</p>
+            <p class="text-sm max-w-lg">{{ author.user.username }}</p>
         </div>
 
         <hr class="my-8 opacity-25">
-
-        <div class="">
+        <div class="comments-container">
             <h1 class="text-3xl font-bold mb-4">Posts</h1>
-            {% for post in posts %}
-                <p class="text-sm">{{ post.title }}</p>
-                <p class="text-sm">{{ post.content }}</p>
-                <!-- <hr class="my-4 opacity-25"> -->
-            {% endfor %}
+            <div class="comments">
+                {% for post in posts %}
+                    <div class="post">
+                        <a href="{% url 'post_detail' post.author.id %}" class="text-sm font-bold text-[#4b7dc4]">{{ post.title }}</a>
+                        <p class="text-xs italic">{{ post.created_at }}</p>
+                        <p class="text-sm mt-1">{{ post.content }}</p>
+                        <hr class="my-4 opacity-25">
+                    </div>
+                {% endfor %}
+                {% if posts.paginator.num_pages > posts.number %}
+                    <button
+                        class="load-more-posts bg-[#4b7dc4] text-white py-2 px-4 rounded mt-5"
+                        hx-get="{% url 'author_load_more_posts' post.id %}?offset={{ offset|add:posts.paginator.per_page }}"
+                        hx-target=".load-more-posts"
+                        hx-swap="beforebegin"
+                    >
+                        Load More Posts
+                    </button>
+                {% endif %}
+            </div>
         </div>
     </div>
+
+    <script nonce>
+    $(document).ready(function() {
+        function loadMorePosts() {
+            $(".load-more-posts").on("htmx:afterOnLoad", function(e) {
+                console.log("loadMorePosts")
+                $(this).remove();
+                loadMorePosts()
+            })
+        }
+        loadMorePosts()
+    })
+    </script>
 {% endblock %}
 
 
