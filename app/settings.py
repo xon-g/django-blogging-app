@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'app',
     'blog',
     'components',
+    'rest_framework',
+    'api',
 ]
 
 TAILWIND_APP_NAME='theme'
@@ -113,6 +115,16 @@ DATABASES = {
     }
 }
 DATABASES['default'] = DATABASES[os.getenv('DB', 'default')]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

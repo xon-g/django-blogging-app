@@ -17,9 +17,11 @@ django-shell-plus==1.1.7
 django-tables2==2.7.0
 django-tailwind==3.8.0
 django_components==0.102
+djangorestframework==3.15.2
 Faker==33.0.0
 idna==3.10
 Jinja2==3.1.4
+Markdown==3.7
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
