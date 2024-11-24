@@ -24,12 +24,21 @@
 	</head>
 
 	<body class="">
-		<nav class="navbar bg-base-100">
+		<nav class="navbar bg-base-100 flex justify-between">
 			<ul class="menu menu-horizontal px-1">
 				<li><a href="#">Assessment Exam</a></li>
 				<li><a href="#">Home</a></li>
 				<li><a href="/posts">Posts</a></li>
 				<li><a href="/authors">Authors</a></li>
+			</ul>
+			<ul class="menu menu-horizontal px-1">
+				{% if user.is_authenticated %}
+					<li><a href="{% url 'user_logout' %}">Logout</a></li>
+					<li><span>{{ user.username }}</span></li>
+				{% else %}
+					<li><a href="{% url 'user_login' %}">Login</a></li>
+					<li><a href="{% url 'user_register' %}">Register</a></li>
+				{% endif %}
 			</ul>
 		</nav>
 		<div class="container mx-auto">

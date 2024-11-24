@@ -1,3 +1,6 @@
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -5,10 +8,59 @@ from django.template.defaultfilters import date
 from django.urls import reverse
 from django.views.generic import View, ListView, DetailView, CreateView
 
-from .models import Post, Comment, Author
-from .forms import CommentForm
+from .models import Post, Comment, Author, User
+from .forms import LoginForm, RegisterForm, CommentForm
+
+from pprint import pprint
 
 # from pprint import pprint
+
+class UserLoginView(View):
+    model = User
+    template_name = 'user_login.html'
+    context_object_name = 'user'
+    form_class = LoginForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid() and hasattr(form, 'user'):
+            login(request, form.user)
+            return redirect('post_list')
+
+        pprint(form.non_field_errors())
+
+        return render(request, self.template_name, {'form': form})
+
+class UserLogoutView(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            logout(request)
+        return redirect('post_list')
+
+class UserRegisterView(CreateView):
+    model = User
+    template_name = 'user_register.html'
+    form_class = RegisterForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        pprint('Registering...')
+        if form.is_valid():
+            user = form.save()
+            Author.objects.create(user=user)
+            messages.success(request, "Registration successful. You can now log in.")
+            return redirect('user_login')
+        else:
+            pprint("Not valid")
+            pprint(form.errors)
+            pprint(hasattr(form, 'user'))
+            return render(request, self.template_name, {'form': form})
+
+
 
 class PostListView(ListView):
     model = Post
@@ -41,6 +93,10 @@ class PostDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         form = CommentForm(request.POST)
+
+        if (not request.user.is_authenticated or request.user.author is None):
+            return redirect('admin:login')
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.author_id = request.user.author.id
@@ -50,7 +106,7 @@ class PostDetailView(DetailView):
         else:
             return render(request, self.template_name, self.get_context_data())
 
-class CommentCreateView(CreateView):
+class CommentCreateView(CreateView, LoginRequiredMixin):
     model = Comment
     form_class = CommentForm
     template_name = 'comment_form.html'

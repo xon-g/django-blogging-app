@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="d-flex flex-column">
+        <h1 class="text-3xl font-bold mb-4">Login</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                    <button type="button" class="close close-button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-4">
+                {{ form.credential }}
+                {% if form.credential.errors %}
+                    <div class="text-red-500 text-xs mt-1">
+                        {{ form.credential.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="text-red-500 text-xs mt-1">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            {% for error in form.non_field_errors %}
+                <div class="text-red-500 text-xs mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="bg-[#4b7dc4] text-white py-2 px-4 rounded mt-5">Login</button>
+        </form>
+
+        <!-- Ask if user wants to create an account -->
+        <p class="text-sm mt-4">
+            Don't have an account? <a href="{% url 'user_register' %}" class="text-[#4b7dc4]">Create an account</a>
+        </p>
+    </div>
+
+    <script nonce>
+        $(document).ready(function() {
+            $('.close-button').on('click', function() {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+{% endblock %}
