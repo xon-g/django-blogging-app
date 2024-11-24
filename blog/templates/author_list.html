@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+    <div class="d-flex flex-column">
+        <h1 class="text-3xl font-bold mb-4">Authors</h1>
+        {% component 'authors-table' %}  {% endcomponent %}
+    </div>
+{% endblock %}

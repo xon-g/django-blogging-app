@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="flex flex-col">
+        <div class="">
+            <h1 class="text-3xl font-bold mb-4">Post</h1>
+            <h1 class="text-2xl font-bold">{{ post.title }}</h1>
+            <div class="text-sm">
+                <span>By</span>
+                <a href="{% url 'author_detail' post.author.id %}" class="font-bold text-[#4b7dc4]">{{ post.author }}</a>
+            </div>
+            <p class="text-sm">{{ post.published_date }}</p>
+            <p class="text-sm mt-4 max-w-lg">{{ post.content }}</p>
+        </div>
+
+        <hr class="my-8 opacity-25">
+
+        <div>
+            <h1 class="text-3xl font-bold mb-4">Add Comment</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="bg-[#4b7dc4] text-white py-2 px-4 rounded mt-5">Submit</button>
+            </form>
+        </div>
+
+        <hr class="my-8 opacity-25">
+
+        <div class="comments-container">
+            <h1 class="text-3xl font-bold mb-4">Comments</h1>
+            <div class="comments">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <a href="{% url 'author_detail' comment.author.id %}" class="text-sm font-bold text-[#4b7dc4]">{{ comment.author }}</a>
+                        <p class="text-xs italic">{{ comment.created_at }}</p>
+                        <p class="text-sm mt-1">{{ comment.body }}</p>
+                        <hr class="my-4 opacity-25">
+                    </div>
+                {% endfor %}
+                {% if comments.paginator.num_pages > comments.number %}
+                    <button
+                        class="load-more-comments bg-[#4b7dc4] text-white py-2 px-4 rounded mt-5"
+                        hx-get="{% url 'post_load_more_comments' post.id %}?offset={{ offset|add:comments.paginator.per_page }}"
+                        hx-target=".load-more-comments"
+                        hx-swap="beforebegin"
+                    >
+                        Load More Comments
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script nonce>
+    $(document).ready(function() {
+        function loadMoreComments() {
+            $(".load-more-comments").on("htmx:afterOnLoad", function(e) {
+                console.log("loadMoreComments")
+                $(this).remove();
+                loadMoreComments()
+            })
+        }
+        loadMoreComments()
+    })
+    </script>
+{% endblock %}
+
+

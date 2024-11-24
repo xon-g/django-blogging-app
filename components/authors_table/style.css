@@ -1,0 +1,9 @@
+.table-container {
+    display: grid;
+    gap: 1em;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}

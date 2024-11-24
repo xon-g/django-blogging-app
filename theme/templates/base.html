@@ -1,0 +1,39 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+    <title>Assesment Exam</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+		<!-- HTMX -->
+		<script nonce src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+
+		<!-- DaisyUI -->
+		<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+
+		<!-- JQuery -->
+		<script nonce
+			src="https://code.jquery.com/jquery-3.7.1.min.js"
+			integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			crossorigin="anonymous">
+		</script>
+
+		{% tailwind_css %}
+		{% component_dependencies %}
+	</head>
+
+	<body class="">
+		<nav class="navbar bg-base-100">
+			<ul class="menu menu-horizontal px-1">
+				<li><a href="#">Assessment Exam</a></li>
+				<li><a href="#">Home</a></li>
+				<li><a href="/posts">Posts</a></li>
+				<li><a href="/authors">Authors</a></li>
+			</ul>
+		</nav>
+		<div class="container mx-auto">
+			{% block content %}{% endblock %}
+		</div>
+	</body>
+</html>
