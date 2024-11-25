@@ -1,13 +1,8 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib.auth.models import Group
-from django_filters.rest_framework import DjangoFilterBackend
 from app.models import User
 from blog.models import Post, Comment, Author
 
-from rest_framework import permissions, viewsets, generics
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework import permissions, viewsets
 
 from .serializers \
 import UserSerializer, \
@@ -64,7 +59,6 @@ class PostViewSet(viewsets.ModelViewSet):
     """
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
-    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'author__name']
 
     def get_serializer_class(self):
