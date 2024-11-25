@@ -24,7 +24,7 @@
                 {% if posts.paginator.num_pages > posts.number %}
                     <button
                         class="load-more-posts bg-[#4b7dc4] text-white py-2 px-4 rounded mt-5"
-                        hx-get="{% url 'author_load_more_posts' post.id %}?offset={{ offset|add:posts.paginator.per_page }}"
+                        hx-get="{% url 'author_load_more_posts' author.id %}?offset={{ offset|add:posts.paginator.per_page }}"
                         hx-target=".load-more-posts"
                         hx-swap="beforebegin"
                     >
