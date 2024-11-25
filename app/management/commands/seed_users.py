@@ -18,7 +18,7 @@ class Command(BaseCommand):
         while User.objects.filter(username=username).exists():
             count += 1
             username = f"{username}.{count}"
-        return username
+        return username.lower()
 
     def create_email(self, username):
         return f"{username}@xon.com"
