@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.contrib.auth.models import Group
+from django_filters.rest_framework import DjangoFilterBackend
 from app.models import User
 from blog.models import Post, Comment, Author
 
@@ -63,9 +64,11 @@ class PostViewSet(viewsets.ModelViewSet):
     """
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'author__name']
 
     def get_serializer_class(self):
-        pprint("Action: " + self.action)
+        # pprint("Action: " + self.action)
         if self.action == 'list':
             return PostSerializer
         elif self.action == 'create':
@@ -73,6 +76,12 @@ class PostViewSet(viewsets.ModelViewSet):
         elif self.action == 'retrieve':
             return PostDetailSerializer
         return self.serializer_class
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permission() for permission in [permissions.IsAuthenticated]]
+        else:
+            return [permission() for permission in []]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -87,7 +96,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentDetailSerializer
 
     def get_serializer_class(self):
-        pprint("Action: " + self.action)
+        # pprint("Action: " + self.action)
         if self.action == 'list':
             return CommentSerializer
         elif self.action == 'create':
@@ -95,6 +104,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         elif self.action == 'retrieve':
             return CommentDetailSerializer
         return self.serializer_class
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permission() for permission in [permissions.IsAuthenticated]]
+        else:
+            return [permission() for permission in []]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
