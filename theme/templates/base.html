@@ -34,7 +34,7 @@
 			<ul class="menu menu-horizontal px-1">
 				{% if user.is_authenticated %}
 					<li><a href="{% url 'user_logout' %}">Logout</a></li>
-					<li><span>{{ user.username }}</span></li>
+					<li><a href="{% url 'author_detail' user.author.id %}">{{ user.username }}</a></li>
 				{% else %}
 					<li><a href="{% url 'user_login' %}">Login</a></li>
 					<li><a href="{% url 'user_register' %}">Register</a></li>
