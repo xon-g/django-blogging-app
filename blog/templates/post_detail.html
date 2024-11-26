@@ -13,7 +13,7 @@
             <p class="text-sm mt-4 max-w-lg">{{ post.content }}</p>
         </div>
 
-        {% if request.user.is_authenticated and request.user.author %}
+        {% if request.user.is_authenticated %}
         <hr class="my-8 opacity-25">
         <div>
             <h1 class="text-3xl font-bold mb-4">Add Comment</h1>
