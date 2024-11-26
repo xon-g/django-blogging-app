@@ -14,11 +14,12 @@ class Command(BaseCommand):
     help = "Seed users"
 
     def create_username(self, username):
+        username = username.lower()
         count = 0
         while User.objects.filter(username=username).exists():
             count += 1
             username = f"{username}.{count}"
-        return username.lower()
+        return username
 
     def create_email(self, username):
         return f"{username}@xon.com"
