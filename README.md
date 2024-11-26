@@ -1,17 +1,18 @@
 # Containerized Django Blog Web App
 
-This is a Django web application configured to run in a Dockerized environment with PostgreSQL as the database. The setup uses Docker Compose to manage services.
+This is a Django web application configured to run in a Dockerized environment with PostgreSQL as the database and Nginx as reverse proxy server. The setup uses Docker Compose to manage services.
 
 ## Features
 
 1. Django development server with hot-reloading.
 2. Django Rest Framework
 3. PostgreSQL 14 as the database.
-4. Docker Compose for service orchestration.
-5. Automatic database initialization and application startup.
-6. HTMX and Jquery
-7. Tailwind CSS and DaisyUI
-8. User Authentication
+4. Nginx server.
+5. Docker Compose for service orchestration.
+6. Automatic database initialization and application startup.
+7. HTMX and Jquery
+8. Tailwind CSS and DaisyUI
+9. User Authentication
 
 ## Usage
 

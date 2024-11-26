@@ -1,6 +1,18 @@
 version: '3.9'
 
 services:
+  nginx:
+      image: nginx:latest
+      container_name: nginx
+      ports:
+        - "8000:80"
+      depends_on:
+        - web
+      volumes:
+        - ./nginx:/etc/nginx/conf.d
+      networks:
+        - default
+
   web:
     build:
       context: .
@@ -9,7 +21,7 @@ services:
     command: >
       bash -c "
       chmod +x /app/wait-for-it.sh &&
-      /app/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- &&
+      /app/wait-for-it.sh -t 5 ${DB_HOST}:${DB_PORT} -- &&
       psql -h ${DB_HOST} -U ${DB_USER} -c 'CREATE DATABASE ${DB_NAME}' || true &&
       python manage.py runserver 0.0.0.0:8000"
     depends_on:
@@ -17,8 +29,6 @@ services:
         condition: service_healthy
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
     env_file:
       - .env
     environment:
@@ -28,8 +38,6 @@ services:
   db:
     container_name: postgres_db
     image: postgres:14
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
