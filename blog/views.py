@@ -102,8 +102,8 @@ class PostDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         form = CommentForm(request.POST)
 
-        if (not request.user.is_authenticated or request.user.author is None):
-            return redirect('admin:login')
+        if not request.user.is_authenticated:
+            return redirect('user_login')
 
         if form.is_valid():
             comment = form.save(commit=False)
