@@ -27,7 +27,7 @@ class TestPostAPI(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user('testuser', 'testuser@example.com', 'password', first_name='Test', last_name='User')
-        self.author = Author.objects.create(user=self.user)
+        self.author = self.user.author
         self.client.force_authenticate(user=self.user)
 
     def test_create_post(self):
@@ -82,12 +82,8 @@ class TestPostAPI(TestCase):
         self.assertEqual(response.data['results'][0]['title'], 'Test Post 1')
 
     def test_filter_by_author_name(self):
-        author1 = Author.objects.create(
-            user=User.objects.create_user('author1', 'author1@example.com', 'password', first_name='Author', last_name='One')
-        )
-        author2 = Author.objects.create(
-            user=User.objects.create_user('author2', 'author2@example.com', 'password', first_name='Author', last_name='Two')
-        )
+        author1 = User.objects.create_user('author1', 'author1@example.com', 'password', first_name='Author', last_name='One').author
+        author2 = User.objects.create_user('author2', 'author2@example.com', 'password', first_name='Author', last_name='Two').author
 
         post1 = Post.objects.create(title='Test Post 1', content='This is a test post', author=author1)
         post2 = Post.objects.create(title='Test Post 2', content='This is another test post', author=author2)
@@ -100,12 +96,8 @@ class TestPostAPI(TestCase):
         self.assertEqual(response.data['results'][1]['author'], 'Author One')
 
     def test_filter_by_title_and_author_name(self):
-        author1 = Author.objects.create(
-            user=User.objects.create_user('author1', 'author1@example.com', 'password', first_name='Author', last_name='One')
-        )
-        author2 = Author.objects.create(
-            user=User.objects.create_user('author2', 'author2@example.com', 'password', first_name='Author', last_name='Two')
-        )
+        author1 = User.objects.create_user('author1', 'author1@example.com', 'password', first_name='Author', last_name='One').author
+        author2 = User.objects.create_user('author2', 'author2@example.com', 'password', first_name='Author', last_name='Two').author
 
         post1 = Post.objects.create(title='Test Post 1', content='This is a test post', author=author1)
         post2 = Post.objects.create(title='Test Post 2', content='This is another test post', author=author2)
