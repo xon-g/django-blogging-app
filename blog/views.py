@@ -22,6 +22,9 @@ class UserLoginView(View):
     form_class = LoginForm
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('post_list')
+
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
 
@@ -45,6 +48,11 @@ class UserRegisterView(CreateView):
     model = User
     template_name = 'user_register.html'
     form_class = RegisterForm
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('post_list')
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
